@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Historial de Ventas</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for venta in ventas %}
+                            <tr>
+                                <td>{{ venta.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>${{ "%.2f"|format(venta.total) }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#detalle{{ venta.id }}">
+                                        Ver Detalles
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <div class="collapse" id="detalle{{ venta.id }}">
+                                        <div class="card card-body">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Producto</th>
+                                                        <th>Cantidad</th>
+                                                        <th>Precio Unitario</th>
+                                                        <th>Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for detalle in venta.productos %}
+                                                    <tr>
+                                                        <td>{{ detalle.producto.nombre }}</td>
+                                                        <td>{{ detalle.cantidad }}</td>
+                                                        <td>${{ "%.2f"|format(detalle.precio_unitario) }}</td>
+                                                        <td>${{ "%.2f"|format(detalle.cantidad * detalle.precio_unitario) }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
