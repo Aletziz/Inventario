@@ -1,43 +1,53 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <h1 class="mb-4">Realizar Venta</h1>
 
 <div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <form method="POST">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Precio</th>
-                                    <th>Stock Actual</th>
-                                    <th>Cantidad que Quedará</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for producto in productos %}
-                                <tr>
-                                    <td>{{ producto.nombre }}</td>
-                                    <td>${{ "%.2f"|format(producto.precio) }}</td>
-                                    <td>{{ producto.cantidad }}</td>
-                                    <td>
-                                        <input type="hidden" name="productos" value="{{ producto.id }}">
-                                        <input type="number" class="form-control" name="cantidades_restantes" 
-                                               min="0" max="{{ producto.cantidad }}" value="{{ producto.cantidad }}">
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <button type="submit" class="btn btn-success mt-3">Realizar Venta</button>
-                </form>
-            </div>
-        </div>
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <form method="POST">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Precio</th>
+                  <th>Stock Actual</th>
+                  <th>Stock Final</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for producto in productos %}
+                <tr>
+                  <td>{{ producto.nombre }}</td>
+                  <td>${{ "%.2f"|format(producto.precio) }}</td>
+                  <td>{{ producto.cantidad }}</td>
+                  <td>
+                    <input
+                      type="hidden"
+                      name="productos"
+                      value="{{ producto.id }}"
+                    />
+                    <input
+                      type="number"
+                      class="form-control"
+                      name="cantidades_restantes"
+                      min="0"
+                      max="{{ producto.cantidad }}"
+                      value="{{ producto.cantidad }}"
+                    />
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <button type="submit" class="btn btn-success mt-3">
+            Realizar Venta
+          </button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
-{% endblock %} 
+{% endblock %}

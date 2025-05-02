@@ -212,6 +212,23 @@ def reportes():
                          productos_mas_vendidos=productos_mas_vendidos,
                          ingresos_por_producto=ingresos_por_producto)
 
+@app.route('/limpiar_historial_ventas')
+@login_required
+def limpiar_historial_ventas():
+    try:
+        # Eliminar todos los detalles de ventas
+        DetalleVenta.query.delete()
+        # Eliminar todas las ventas
+        Venta.query.delete()
+        # Confirmar los cambios
+        db.session.commit()
+        flash('El historial de ventas ha sido eliminado correctamente', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error al eliminar el historial: {str(e)}', 'danger')
+    
+    return redirect(url_for('historial_ventas'))
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
@@ -222,5 +239,14 @@ if __name__ == '__main__':
                 password_hash=generate_password_hash('admin123')
             )
             db.session.add(admin)
+            db.session.commit()
+        
+        # Crear usuario josue si no existe
+        if not Usuario.query.filter_by(username='josue').first():
+            josue_user = Usuario(
+                username='josue',
+                password_hash=generate_password_hash('josueconyedo321')
+            )
+            db.session.add(josue_user)
             db.session.commit()
     app.run(debug=True)

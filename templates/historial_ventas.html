@@ -1,68 +1,159 @@
-{% extends "base.html" %}
-
-{% block content %}
-<h1 class="mb-4">Historial de Ventas</h1>
+{% extends "base.html" %} {% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="mb-0">Historial de Ventas</h1>
+  <button
+    type="button"
+    class="btn btn-danger"
+    data-bs-toggle="modal"
+    data-bs-target="#limpiarHistorialModal"
+  >
+    <i class="bi bi-trash"></i> Limpiar Historial
+  </button>
+</div>
 
 <div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Detalles</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for venta in ventas %}
+              <tr>
+                <td>{{ venta.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>${{ "%.2f"|format(venta.total) }}</td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-info"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#detalle{{ venta.id }}"
+                  >
+                    Ver Detalles
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <div class="collapse" id="detalle{{ venta.id }}">
+                    <div class="card card-body">
+                      <table class="table">
                         <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Total</th>
-                                <th>Detalles</th>
-                            </tr>
+                          <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Subtotal</th>
+                          </tr>
                         </thead>
                         <tbody>
-                            {% for venta in ventas %}
-                            <tr>
-                                <td>{{ venta.fecha.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                                <td>${{ "%.2f"|format(venta.total) }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-info" type="button" 
-                                            data-bs-toggle="collapse" 
-                                            data-bs-target="#detalle{{ venta.id }}">
-                                        Ver Detalles
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">
-                                    <div class="collapse" id="detalle{{ venta.id }}">
-                                        <div class="card card-body">
-                                            <table class="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Producto</th>
-                                                        <th>Cantidad</th>
-                                                        <th>Precio Unitario</th>
-                                                        <th>Subtotal</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for detalle in venta.productos %}
-                                                    <tr>
-                                                        <td>{{ detalle.producto.nombre }}</td>
-                                                        <td>{{ detalle.cantidad }}</td>
-                                                        <td>${{ "%.2f"|format(detalle.precio_unitario) }}</td>
-                                                        <td>${{ "%.2f"|format(detalle.cantidad * detalle.precio_unitario) }}</td>
-                                                    </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
+                          {% for detalle in venta.productos %}
+                          <tr>
+                            <td>{{ detalle.producto.nombre }}</td>
+                            <td>{{ detalle.cantidad }}</td>
+                            <td>
+                              ${{ "%.2f"|format(detalle.precio_unitario) }}
+                            </td>
+                            <td>
+                              ${{ "%.2f"|format(detalle.cantidad *
+                              detalle.precio_unitario) }}
+                            </td>
+                          </tr>
+                          {% endfor %}
                         </tbody>
-                    </table>
-                </div>
-            </div>
+                      </table>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
+  </div>
 </div>
-{% endblock %} 
+
+<!-- Modal de confirmación -->
+<div
+  class="modal fade"
+  id="limpiarHistorialModal"
+  tabindex="-1"
+  aria-labelledby="limpiarHistorialModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="limpiarHistorialModalLabel">
+          Confirmar eliminación
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <strong>¡Advertencia!</strong> Esta acción eliminará permanentemente
+          todo el historial de ventas.
+        </p>
+        <p>¿Estás seguro que deseas eliminar todo el historial de ventas?</p>
+
+        <div class="form-group mt-3">
+          <label for="confirmText" class="form-label"
+            >Para confirmar, escribe "acepto":</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="confirmText"
+            placeholder="acepto"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="btnConfirmarLimpiar"
+          disabled
+        >
+          <i class="bi bi-trash"></i> Eliminar Historial
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const confirmInput = document.getElementById("confirmText");
+    const btnConfirmar = document.getElementById("btnConfirmarLimpiar");
+
+    confirmInput.addEventListener("input", function () {
+      btnConfirmar.disabled = this.value.toLowerCase() !== "acepto";
+    });
+
+    btnConfirmar.addEventListener("click", function () {
+      if (confirmInput.value.toLowerCase() === "acepto") {
+        window.location.href = "{{ url_for('limpiar_historial_ventas') }}";
+      }
+    });
+  });
+</script>
+{% endblock %}
