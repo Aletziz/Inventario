@@ -246,22 +246,31 @@ def limpiar_historial_ventas():
 
 if __name__ == '__main__':
     with app.app_context():
+        # Crear todas las tablas
         db.create_all()
-        # Crear usuario administrador si no existe
-        if not Usuario.query.filter_by(username='admin').first():
+        
+        # Verificar si ya existe algún usuario
+        if Usuario.query.first() is None:
+            # Crear usuario administrador
             admin = Usuario(
                 username='admin',
                 password_hash=generate_password_hash('admin123')
             )
             db.session.add(admin)
-            db.session.commit()
-        
-        # Crear usuario josue si no existe
-        if not Usuario.query.filter_by(username='josue').first():
+            
+            # Crear usuario josue
             josue_user = Usuario(
                 username='josue',
                 password_hash=generate_password_hash('josueconyedo321')
             )
             db.session.add(josue_user)
-            db.session.commit()
+            
+            # Guardar los cambios
+            try:
+                db.session.commit()
+                print("Usuarios creados exitosamente")
+            except Exception as e:
+                db.session.rollback()
+                print(f"Error al crear usuarios: {str(e)}")
+    
     app.run(debug=True)
