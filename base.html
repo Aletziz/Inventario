@@ -364,11 +364,20 @@
     <script>
       // Script para el cambio de tema
       document.addEventListener("DOMContentLoaded", function () {
+        // Solo ejecutar el código del tema si estamos en una página que tiene el botón de tema
         const themeToggle = document.getElementById("themeToggle");
+        if (!themeToggle) {
+          // Si no hay botón de tema, solo establecer el tema básico
+          const html = document.documentElement;
+          const savedTheme = localStorage.getItem("theme") || "light";
+          html.setAttribute("data-bs-theme", savedTheme);
+          return;
+        }
+
+        // El resto del código solo se ejecuta si existe el botón de tema
         const themeIcon = document.getElementById("themeIcon");
         const themeText = document.getElementById("themeText");
         const html = document.documentElement;
-        const navbar = document.querySelector(".navbar");
 
         // Cargar preferencia guardada
         const savedTheme = localStorage.getItem("theme") || "light";
@@ -376,16 +385,14 @@
         updateThemeUI(savedTheme);
 
         // Manejar cambio de tema
-        if (themeToggle) {
-          themeToggle.addEventListener("click", function () {
-            const currentTheme = html.getAttribute("data-bs-theme");
-            const newTheme = currentTheme === "light" ? "dark" : "light";
+        themeToggle.addEventListener("click", function () {
+          const currentTheme = html.getAttribute("data-bs-theme");
+          const newTheme = currentTheme === "light" ? "dark" : "light";
 
-            html.setAttribute("data-bs-theme", newTheme);
-            localStorage.setItem("theme", newTheme);
-            updateThemeUI(newTheme);
-          });
-        }
+          html.setAttribute("data-bs-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+          updateThemeUI(newTheme);
+        });
 
         // Actualizar UI según el tema
         function updateThemeUI(theme) {
@@ -395,14 +402,12 @@
           if (themeText) {
             themeText.textContent = theme === "dark" ? "Modo Oscuro" : "Modo Claro";
           }
-          if (themeToggle) {
-            if (theme === "dark") {
-              themeToggle.classList.remove("btn-outline-light");
-              themeToggle.classList.add("btn-outline-secondary");
-            } else {
-              themeToggle.classList.remove("btn-outline-secondary");
-              themeToggle.classList.add("btn-outline-light");
-            }
+          if (theme === "dark") {
+            themeToggle.classList.remove("btn-outline-light");
+            themeToggle.classList.add("btn-outline-secondary");
+          } else {
+            themeToggle.classList.remove("btn-outline-secondary");
+            themeToggle.classList.add("btn-outline-light");
           }
         }
       });
