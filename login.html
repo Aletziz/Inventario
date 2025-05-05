@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center min-vh-100 align-items-center">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white text-center py-4">
+                <i class="bi bi-shop display-4 text-primary mb-3"></i>
+                <h3 class="card-title mb-0">Sistema de Gestión</h3>
+                <p class="text-muted mb-0">Inicie sesión para continuar</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="bi bi-person"></i> Usuario
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-person-fill"></i>
+                            </span>
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   placeholder="Ingrese su usuario" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label">
+                            <i class="bi bi-key"></i> Contraseña
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-lock-fill"></i>
+                            </span>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   placeholder="Ingrese su contraseña" required>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-white text-center py-3">
+                <small class="text-muted">
+                    <i class="bi bi-shield-lock"></i> Sistema seguro para administradores
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para actualizar el tema UI
+    function updateThemeUI() {
+        const body = document.body;
+        if (body) {
+            body.classList.add('bg-light');
+        }
+    }
+
+    // Llamar a la función cuando el DOM esté listo
+    updateThemeUI();
+});
+</script>
+{% endblock %} 
