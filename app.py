@@ -69,21 +69,23 @@ def login():
             user = Usuario.query.filter_by(username=username).first()
             
             if user is None:
+                print(f"Intento de login fallido: Usuario '{username}' no encontrado")
                 flash('Usuario no encontrado')
                 return render_template('login.html')
             
             # Verificar la contraseña
             if check_password_hash(user.password_hash, password):
                 session['user_id'] = user.id
+                print(f"Login exitoso para usuario: {username}")
                 flash('Inicio de sesión exitoso')
                 return redirect(url_for('index'))
             else:
+                print(f"Intento de login fallido: Contraseña incorrecta para usuario '{username}'")
                 flash('Contraseña incorrecta')
                 return render_template('login.html')
                 
         return render_template('login.html')
     except Exception as e:
-        # Registrar el error para debugging
         print(f"Error en login: {str(e)}")
         flash('Ocurrió un error durante el inicio de sesión. Por favor, intente nuevamente.')
         return render_template('login.html')
@@ -246,31 +248,47 @@ def limpiar_historial_ventas():
 
 if __name__ == '__main__':
     with app.app_context():
-        # Crear todas las tablas
-        db.create_all()
-        
-        # Verificar si ya existe algún usuario
-        if Usuario.query.first() is None:
-            # Crear usuario administrador
-            admin = Usuario(
-                username='admin',
-                password_hash=generate_password_hash('admin123')
-            )
-            db.session.add(admin)
+        try:
+            # Crear todas las tablas
+            print("Creando tablas de la base de datos...")
+            db.create_all()
+            print("Tablas creadas exitosamente")
             
-            # Crear usuario josue
-            josue_user = Usuario(
-                username='josue',
-                password_hash=generate_password_hash('josueconyedo321')
-            )
-            db.session.add(josue_user)
+            # Verificar si ya existe algún usuario
+            print("Verificando usuarios existentes...")
+            admin_exists = Usuario.query.filter_by(username='admin').first()
+            josue_exists = Usuario.query.filter_by(username='josue').first()
+            
+            # Crear usuarios si no existen
+            if not admin_exists:
+                print("Creando usuario admin...")
+                admin = Usuario(
+                    username='admin',
+                    password_hash=generate_password_hash('admin123')
+                )
+                db.session.add(admin)
+                print("Usuario admin creado")
+            
+            if not josue_exists:
+                print("Creando usuario josue...")
+                josue_user = Usuario(
+                    username='josue',
+                    password_hash=generate_password_hash('josueconyedo321')
+                )
+                db.session.add(josue_user)
+                print("Usuario josue creado")
             
             # Guardar los cambios
-            try:
-                db.session.commit()
-                print("Usuarios creados exitosamente")
-            except Exception as e:
-                db.session.rollback()
-                print(f"Error al crear usuarios: {str(e)}")
+            db.session.commit()
+            print("Todos los cambios guardados exitosamente")
+            
+            # Verificar usuarios creados
+            usuarios = Usuario.query.all()
+            print(f"Usuarios en la base de datos: {[u.username for u in usuarios]}")
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error durante la inicialización: {str(e)}")
+            raise e
     
     app.run(debug=True)
