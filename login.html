@@ -1,70 +1,100 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="row justify-content-center min-vh-100 align-items-center">
-    <div class="col-md-5 col-lg-4">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white text-center py-4">
-                <i class="bi bi-shop display-4 text-primary mb-3"></i>
-                <h3 class="card-title mb-0">Sistema de Gestión</h3>
-                <p class="text-muted mb-0">Inicie sesión para continuar</p>
-            </div>
-            <div class="card-body p-4">
-                <form method="POST">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">
-                            <i class="bi bi-person"></i> Usuario
-                        </label>
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-person-fill"></i>
-                            </span>
-                            <input type="text" class="form-control" id="username" name="username" 
-                                   placeholder="Ingrese su usuario" required>
-                        </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Aletzi_System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: white;
+            border-bottom: none;
+        }
+        .btn-primary {
+            padding: 10px 20px;
+        }
+        .social-icons a {
+            transition: transform 0.3s ease;
+        }
+        .social-icons a:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white text-center py-4">
+                        <i class="bi bi-shop display-4 text-primary mb-3"></i>
+                        <h3 class="card-title mb-0">Sistema de Gestión</h3>
+                        <p class="text-muted mb-0">Inicie sesión para continuar</p>
                     </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label">
-                            <i class="bi bi-key"></i> Contraseña
-                        </label>
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-lock-fill"></i>
-                            </span>
-                            <input type="password" class="form-control" id="password" name="password" 
-                                   placeholder="Ingrese su contraseña" required>
-                        </div>
+                    <div class="card-body p-4">
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                    {% for message in messages %}
+                                        {{ message }}
+                                    {% endfor %}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">
+                                    <i class="bi bi-person"></i> Usuario
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-person-fill"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="username" name="username" 
+                                           placeholder="Ingrese su usuario" required>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="password" class="form-label">
+                                    <i class="bi bi-key"></i> Contraseña
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </span>
+                                    <input type="password" class="form-control" id="password" name="password" 
+                                           placeholder="Ingrese su contraseña" required>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
-                        </button>
+                    <div class="card-footer bg-white text-center py-3">
+                        <small class="text-muted">
+                            <i class="bi bi-shield-lock"></i> Sistema seguro para administradores
+                        </small>
                     </div>
-                </form>
-            </div>
-            <div class="card-footer bg-white text-center py-3">
-                <small class="text-muted">
-                    <i class="bi bi-shield-lock"></i> Sistema seguro para administradores
-                </small>
+                </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
 
-{% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Función para actualizar el tema UI
-    function updateThemeUI() {
-        const body = document.body;
-        if (body) {
-            body.classList.add('bg-light');
-        }
-    }
-
-    // Llamar a la función cuando el DOM esté listo
-    updateThemeUI();
-});
-</script>
-{% endblock %} 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
