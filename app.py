@@ -60,18 +60,33 @@ class DetalleVenta(db.Model):
 # Rutas de autenticación
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        user = Usuario.query.filter_by(username=username).first()
-        
-        if user and check_password_hash(user.password_hash, password):
-            session['user_id'] = user.id
-            flash('Inicio de sesión exitoso')
-            return redirect(url_for('index'))
-        else:
-            flash('Usuario o contraseña incorrectos')
-    return render_template('login.html')
+    try:
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            
+            # Verificar si el usuario existe
+            user = Usuario.query.filter_by(username=username).first()
+            
+            if user is None:
+                flash('Usuario no encontrado')
+                return render_template('login.html')
+            
+            # Verificar la contraseña
+            if check_password_hash(user.password_hash, password):
+                session['user_id'] = user.id
+                flash('Inicio de sesión exitoso')
+                return redirect(url_for('index'))
+            else:
+                flash('Contraseña incorrecta')
+                return render_template('login.html')
+                
+        return render_template('login.html')
+    except Exception as e:
+        # Registrar el error para debugging
+        print(f"Error en login: {str(e)}")
+        flash('Ocurrió un error durante el inicio de sesión. Por favor, intente nuevamente.')
+        return render_template('login.html')
 
 @app.route('/logout')
 def logout():
