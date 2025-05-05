@@ -32,11 +32,13 @@ def login_required(f):
 
 # Modelos de la base de datos
 class Usuario(db.Model):
+    __tablename__ = 'usuario'  # Nombre explícito de la tabla
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(120), nullable=False)
 
 class Producto(db.Model):
+    __tablename__ = 'producto'  # Nombre explícito de la tabla
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
     precio = db.Column(db.Float, nullable=False)
@@ -44,12 +46,14 @@ class Producto(db.Model):
     descripcion = db.Column(db.String(200))
 
 class Venta(db.Model):
+    __tablename__ = 'venta'  # Nombre explícito de la tabla
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.DateTime, default=datetime.utcnow)
     total = db.Column(db.Float, nullable=False)
     productos = db.relationship('DetalleVenta', backref='venta', lazy=True)
 
 class DetalleVenta(db.Model):
+    __tablename__ = 'detalle_venta'  # Nombre explícito de la tabla
     id = db.Column(db.Integer, primary_key=True)
     venta_id = db.Column(db.Integer, db.ForeignKey('venta.id'), nullable=False)
     producto_id = db.Column(db.Integer, db.ForeignKey('producto.id'), nullable=False)
@@ -249,8 +253,10 @@ def limpiar_historial_ventas():
 if __name__ == '__main__':
     with app.app_context():
         try:
-            # Crear todas las tablas
-            print("Creando tablas de la base de datos...")
+            # Forzar la creación de tablas
+            print("Eliminando tablas existentes...")
+            db.drop_all()  # Esto eliminará todas las tablas existentes
+            print("Creando nuevas tablas...")
             db.create_all()
             print("Tablas creadas exitosamente")
             
